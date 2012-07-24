@@ -135,7 +135,6 @@ package as3.display
 		private function __init(e:Event):void 
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, __init);
-			addEventListener(Event.REMOVED_FROM_STAGE, __destroy);
 			
 			buttonMode = true;
 			
@@ -158,9 +157,9 @@ package as3.display
 			}
 			else
 			{
-				addEventListener(MouseEvent.MOUSE_OVER, __overHandler);
-				addEventListener(MouseEvent.MOUSE_OUT, __outHandler);
-				addEventListener(MouseEvent.CLICK, __clickHandler);
+				addEventListener(MouseEvent.MOUSE_OVER, __overHandler, false, 0, true);
+				addEventListener(MouseEvent.MOUSE_OUT, __outHandler, false, 0, true);
+				addEventListener(MouseEvent.CLICK, __clickHandler, false, 0, true);
 				
 				if (__inAnchor() && !isMouseOver)
 					open();
@@ -203,19 +202,6 @@ package as3.display
 			
 			var id:String = anchor[depth - 1];
 			return this.name == prefix + id && CINavMenu(parent).__inAnchor();
-		}
-		
-		private function __destroy(e:Event):void 
-		{
-			removeEventListener(Event.REMOVED_FROM_STAGE, __destroy);
-			removeEventListener(MouseEvent.MOUSE_OVER, __overHandler);
-			removeEventListener(MouseEvent.MOUSE_OUT, __outHandler);
-			removeEventListener(MouseEvent.CLICK, __clickHandler);
-			
-			if (rootMenu == this)
-			{
-				outTimer.destory();
-			}
 		}
 		
 		private function __getPath():Array
@@ -336,13 +322,7 @@ class NavTimer extends Timer
 	{
 		super(delay, 1);
 		
-		addEventListener(TimerEvent.TIMER_COMPLETE, __completeHandler);
-	}
-	public function destory():void
-	{
-		removeEventListener(TimerEvent.TIMER_COMPLETE, __completeHandler);
-		stop();
-		_target = null;
+		addEventListener(TimerEvent.TIMER_COMPLETE, __completeHandler, false, 0, true);
 	}
 	public function restart(target:CINavMenu):void
 	{
@@ -353,6 +333,7 @@ class NavTimer extends Timer
 	
 	private function __completeHandler(e:TimerEvent):void 
 	{
-		_target.showAnchor();
+		if(_target)
+			_target.showAnchor();
 	}
 }

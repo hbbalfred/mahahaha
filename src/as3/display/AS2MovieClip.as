@@ -29,6 +29,7 @@
 		
 		protected function __init(e:Event):void 
 		{
+			removeEventListener(Event.ADDED_TO_STAGE, __init, false);
 			buttonMode = true;
 			mouseChildren = false;
 			
@@ -37,25 +38,15 @@
 			
 			_isPressed = false;
 			
-			addEventListener(MouseEvent.MOUSE_DOWN, __downHandler);
-			addEventListener(MouseEvent.MOUSE_OVER, __overHandler);
-			addEventListener(MouseEvent.MOUSE_OUT, __outHandler);
-			addEventListener(Event.REMOVED_FROM_STAGE, __destroy);
-		}
-		
-		protected function __destroy(e:Event):void 
-		{
-			removeEventListener(Event.REMOVED_FROM_STAGE, __destroy);
-			removeEventListener(MouseEvent.MOUSE_DOWN, __downHandler);
-			removeEventListener(MouseEvent.MOUSE_OVER, __overHandler);
-			removeEventListener(MouseEvent.MOUSE_OUT, __outHandler);
-			stage.removeEventListener(MouseEvent.MOUSE_UP, __upHandler);
+			addEventListener(MouseEvent.MOUSE_DOWN, __downHandler, false, 0, true);
+			addEventListener(MouseEvent.MOUSE_OVER, __overHandler, false, 0, true);
+			addEventListener(MouseEvent.MOUSE_OUT, __outHandler, false, 0, true);
 		}
 		
 		protected function __downHandler(e:MouseEvent):void 
 		{
 			_isPressed = true;
-			stage.addEventListener(MouseEvent.MOUSE_UP, __upHandler);
+			stage.addEventListener(MouseEvent.MOUSE_UP, __upHandler, false, 0, true);
 			
 			if (onPress != null)
 				onPress(this);
@@ -64,7 +55,7 @@
 		protected function __upHandler(e:MouseEvent):void 
 		{
 			_isPressed = false;
-			stage.removeEventListener(MouseEvent.MOUSE_UP, __upHandler);
+			stage.removeEventListener(MouseEvent.MOUSE_UP, __upHandler, false);
 			
 			var hitObj:DisplayObject = hitArea ? hitArea : this;
 			
